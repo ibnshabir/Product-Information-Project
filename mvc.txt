@@ -1,0 +1,31 @@
+MVC:
+
+View:
+    - anything have to do with user interface
+    - no logic on manipulation of data involved
+        - view doesn't know what it is displaying
+          
+    DisplayWindow()
+        model = Model()
+    ModifyWindow()
+
+Logic:
+Model()
+    def access()        # accesses data from the context using the read method of repository
+    def modify()        # modifies data of context using the update method of repository
+
+Controller()
+    - this is the brain of the application
+
+Data:
+    Context()
+        def load()      # loads data from the file (similar to a pull request)
+        def save()      # saves data to the file (similar to push request)
+    
+    Repository()
+        - acts as an intermediary between the model and context
+
+        def create()    # creates different repository based on type of product etc
+        def read()      # to read the content of the context to the model
+        def update()    # to update the data sent by the model to context
+        def delete()    # to delete a repository
