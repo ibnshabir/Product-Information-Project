@@ -2,10 +2,10 @@ from context import Context
 
 
 class Model:
-    def __init__(self):
+    def __init__(self, context):
         self.content = None
 
-        self.context = Context()
+        self.context = context
         self.context.load()
 
     def access(self, key):
@@ -15,10 +15,6 @@ class Model:
 
     def modify(self, key, new_data):
         self.context.product_info[key] = new_data
-        self.context.save()
-
-    def add_data(self, key, content):
-        self.context.product_info[key] = content
         self.context.save()
 
 

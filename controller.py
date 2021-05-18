@@ -1,16 +1,20 @@
-"""
-    - get the label title for DisplayWindow from Model
-"""
+from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
 from model import Model
-from modify_window import ModifyWindow
 
-class Controller:
-    def __init__(self):
-        self.model = Model()
-        self.modify_window = ModifyWindow() # connected it with modify button
 
-    def get_app_version(self):
-        return self.model.app_data["application_version"]
+class Controller(QObject):
+    data = pyqtSignal(str)
 
-# controller = Controller()
-# controller.get_app_version()
+    def __init__(self, model):
+        super(Controller, self).__init__()
+        self.model = model
+
+        self.data.connect(self.modify_content)
+
+    @pyqtSlot(str)
+    def modify_content(self, new_data):
+        self.model.modify("app_version", new_data)
+
+    def add_data(self, key, content):
+        self.model.context.product_info[key] = content
+        self.model.context.save()

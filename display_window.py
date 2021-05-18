@@ -1,41 +1,49 @@
-from PyQt5.QtWidgets import QDialog, QApplication, QLabel, QPushButton, QVBoxLayout
+from PyQt5.QtWidgets import QDialog, QLabel, QPushButton, QVBoxLayout
+from PyQt5.QtCore import pyqtSlot
+
+from modify_window import ModifyWindow
 import sys
-from model import Model
-from controller import Controller
 
 
 class DisplayWindow(QDialog):  # use QDialog if want to set layout
-    def __init__(self):
+    def __init__(self, controller, model):
         super().__init__()
-        self.modify = None
+
         self.app_version = None
-        self.model = Model()
-        self.controller = Controller()
+        self.modify = None
+        self.cancel = None
+
+        self.controller = controller
+        self.model = model
+        self.modify_window = None
 
         self.customize()
         self.setWindow()
 
-        self.modify.clicked.connect(self.modify_app_version)
+        self.modify.clicked.connect(self.modify_data)
+        self.controller.data.connect(self.save_content)
+        self.cancel.clicked.connect(sys.exit)
 
     def setWindow(self):
         self.setWindowTitle("Application Version")
-        self.setGeometry(100, 100, 400, 300)
+        self.setGeometry(100, 100, 600, 500)
         self.show()
 
-# use the controller class to get and set information
     def customize(self):
+        label = self.model.access("app_version")
+        self.app_version = QLabel(self)
+        self.app_version.setText(label)
         self.modify = QPushButton('Modify', self)
-        label = self.controller.get_app_version()
-        self.app_version = QLabel(label, self)
+        self.cancel = QPushButton('Cancel', self)
         vbox = QVBoxLayout(self)
         vbox.addWidget(self.app_version)
         vbox.addWidget(self.modify)
+        vbox.addWidget(self.cancel)
         self.setLayout(vbox)
 
-    def modify_app_version(self):
-        pass
+    def modify_data(self):
+        self.modify_window = ModifyWindow(self.controller, self.model)
 
-
-app = QApplication(sys.argv)
-display_window = DisplayWindow()
-sys.exit(app.exec())
+    @pyqtSlot(str)
+    def save_content(self, new_data):
+        self.app_version.setText(new_data)
