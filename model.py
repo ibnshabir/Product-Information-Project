@@ -1,30 +1,29 @@
-import json
-
-# this information can come from the window via controller
-new_data = {
-    "application_version": "1.0.1"
-}
+from context import Context
 
 
 class Model:
     def __init__(self):
+        self.content = None
 
-        self.app_data = []
+        self.context = Context()
+        self.context.load()
 
-        self.load('data.json')
+    def access(self, key):
+        self.context.load()
+        self.content = self.context.product_info[key]
+        return self.content
 
-    def load(self, file_name):
-        with open(file_name, 'r') as file:
-            self.app_data = json.load(file)
-        return self.app_data
+    def modify(self, key, new_data):
+        self.context.product_info[key] = new_data
+        self.context.save()
 
-    def save(self, file_name):
-        with open("data.json", "r+") as file:
-            data = json.load(file)
-            data.update(file_name)
-            file.seek(0)
-            json.dump(data, file, indent=4)
+    def add_data(self, key, content):
+        self.context.product_info[key] = content
+        self.context.save()
+
 
 # model = Model()
-# print(model.load('data.json'))
-# model.save(new_data)
+# print(model.access("app_version"))
+# model.modify("app_version", "000000")
+# model.add_data("hw_version", 12345)
+# print(model.access("app_version"))
