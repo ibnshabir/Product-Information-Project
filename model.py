@@ -1,4 +1,3 @@
-from context import Context
 
 
 class Model:
@@ -10,16 +9,9 @@ class Model:
 
     def access(self, key):
         self.context.load()
-        self.content = self.context.product_info[key]
+        self.content = self.context.app_info[key]
         return self.content
 
     def modify(self, key, new_data):
-        self.context.product_info[key] = new_data
+        self.context.app_info[key] = new_data
         self.context.save()
-
-
-# model = Model()
-# print(model.access("app_version"))
-# model.modify("app_version", "000000")
-# model.add_data("hw_version", 12345)
-# print(model.access("app_version"))
